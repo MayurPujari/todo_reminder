@@ -26,7 +26,6 @@ def get_db_connection():
 
 # Create the Todo resource
 class TodoList(Resource):
-@app.route('/todos', methods=['GET'])
     def get(self):
         conn = get_db_connection()
         cur = conn.cursor()
@@ -48,9 +47,7 @@ class TodoList(Resource):
         conn.close()
         return jsonify({"id": new_id, "text": todo_text, "message": "Todo added!"})
 
-
 class Todo(Resource):
-@app.route('/todos', methods=['GET'])
     def get(self, todo_id):
         conn = get_db_connection()
         cur = conn.cursor()
@@ -96,4 +93,4 @@ api.add_resource(Todo, '/todos/<int:todo_id>')
 api.add_resource(DeleteAllTodos, '/todos/delete_all')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
