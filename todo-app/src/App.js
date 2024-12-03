@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Button, List, ListItem, ListItemText, IconButton, Typography, Box, Container, AppBar, Toolbar } from '@mui/material';
-import { Edit, Delete, DeleteForever } from '@mui/icons-material';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
@@ -23,7 +23,8 @@ const TodoApp = () => {
     if (todoText) {
       axios.post('http://localhost:5000/todos', { text: todoText })
         .then(response => {
-          setTodos([...todos, response.data]);
+          const newTodo = response.data;
+          setTodos([...todos, newTodo]);
           setTodoText('');
         })
         .catch(error => {
@@ -35,7 +36,7 @@ const TodoApp = () => {
   const editTodo = () => {
     if (editTodoText) {
       axios.put(`http://localhost:5000/todos/${editTodoId}`, { text: editTodoText })
-        .then(() => {
+        .then(response => {
           const updatedTodos = todos.map(todo =>
             todo.id === editTodoId ? { ...todo, text: editTodoText } : todo
           );
@@ -51,7 +52,7 @@ const TodoApp = () => {
 
   const deleteTodo = (todoId) => {
     axios.delete(`http://localhost:5000/todos/${todoId}`)
-      .then(() => {
+      .then(response => {
         setTodos(todos.filter(todo => todo.id !== todoId));
       })
       .catch(error => {
@@ -61,7 +62,7 @@ const TodoApp = () => {
 
   const deleteAllTodos = () => {
     axios.delete('http://localhost:5000/todos/delete_all')
-      .then(() => {
+      .then(response => {
         setTodos([]);
       })
       .catch(error => {
@@ -70,77 +71,64 @@ const TodoApp = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <AppBar position="static" sx={{ marginBottom: 4 }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Todo App
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-        <TextField
-          label="Add a new Todo"
-          variant="outlined"
-          fullWidth
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Todo App</h1>
+      <div className="mb-4">
+        <input
+          type="text"
+          className="form-control mb-2"
+          placeholder="Add a new Todo"
           value={todoText}
           onChange={(e) => setTodoText(e.target.value)}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ height: '100%' }}
-          onClick={addTodo}
-        >
+        <button className="btn btn-primary btn-block w-100" onClick={addTodo}>
           Add
-        </Button>
-      </Box>
+        </button>
+      </div>
       {editTodoId && (
-        <Box sx={{ marginBottom: 3 }}>
-          <TextField
-            label="Edit Todo"
-            variant="outlined"
-            fullWidth
+        <div className="mb-4">
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="Edit Todo"
             value={editTodoText}
             onChange={(e) => setEditTodoText(e.target.value)}
           />
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{ marginTop: 2 }}
-            onClick={editTodo}
-          >
+          <button className="btn btn-success btn-block w-100" onClick={editTodo}>
             Save
-          </Button>
-        </Box>
+          </button>
+        </div>
       )}
-      <List sx={{ backgroundColor: '#f9f9f9', borderRadius: 2 }}>
+      <ul className="list-group">
         {todos.map(todo => (
-          <ListItem key={todo.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 2, '&:hover': { backgroundColor: '#f1f1f1' } }}>
-            <ListItemText primary={todo.text} />
-            <Box>
-              <IconButton onClick={() => { setEditTodoText(todo.text); setEditTodoId(todo.id); }}>
-                <Edit />
-              </IconButton>
-              <IconButton onClick={() => deleteTodo(todo.id)}>
-                <Delete />
-              </IconButton>
-            </Box>
-          </ListItem>
+          <li key={todo.id} className="list-group-item d-flex justify-content-between align-items-center">
+            {todo.text}
+            <div>
+              <button
+                className="btn btn-sm btn-warning me-2"
+                onClick={() => { setEditTodoText(todo.text); setEditTodoId(todo.id); }}
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => deleteTodo(todo.id)}
+              >
+                Delete
+              </button>
+            </div>
+          </li>
         ))}
-      </List>
+      </ul>
       {todos.length > 0 && (
-        <Button
-          variant="contained"
-          color="error"
-          fullWidth
-          sx={{ marginTop: 3 }}
+        <button
+          className="btn btn-danger btn-block mt-4 w-100"
           onClick={deleteAllTodos}
         >
-          <DeleteForever sx={{ marginRight: 1 }} /> Delete All Todos
-        </Button>
+          Delete All Todos
+        </button>
       )}
-    </Container>
+    </div>
   );
 };
 

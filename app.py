@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from flask_cors import CORS
 import psycopg2
+import os
 
 # Initialize the Flask app and API
 app = Flask(__name__)
@@ -9,13 +10,18 @@ CORS(app)
 api = Api(app)
 
 # PostgreSQL connection
+# def get_db_connection():
+#     conn = psycopg2.connect(
+#         host="localhost",
+#         database="todo_app",
+#         user="postgres",  
+#         password="postgres"  
+#     )
+#     return conn
+
+# PostgreSQL connection
 def get_db_connection():
-    conn = psycopg2.connect(
-        host="localhost",
-        database="todo_app",
-        user="postgres",  
-        password="postgres"  
-    )
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     return conn
 
 # Create the Todo resource
@@ -34,12 +40,13 @@ class TodoList(Resource):
         todo_text = data['text']
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("INSERT INTO todos (text) VALUES (%s) RETURNING id, text", (todo_text,))
-        new_todo = cur.fetchone()
+        cur.execute("INSERT INTO todos (text) VALUES (%s) RETURNING id", (todo_text,))
+        new_id = cur.fetchone()[0]
         conn.commit()
         cur.close()
         conn.close()
-        return jsonify({"id": new_todo[0], "text": new_todo[1]})
+        return jsonify({"id": new_id, "text": todo_text, "message": "Todo added!"})
+
 
 class Todo(Resource):
     def get(self, todo_id):
