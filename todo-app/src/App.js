@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_URL = "https://todo-reminder-indol.vercel.app"; 
+// const API_URL = "https://todo-reminder-indol.vercel.app"; 
 
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
@@ -11,18 +11,18 @@ const TodoApp = () => {
   const [editTodoId, setEditTodoId] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API_URL}/todos`)
+    axios.get('https://todo-reminder-indol.vercel.app/todos')
       .then(response => {
         setTodos(response.data);
       })
       .catch(error => {
         console.error('Error fetching todos:', error);
       });
-}, []);
+  }, []);
 
   const addTodo = () => {
     if (todoText) {
-      axios.post(`${API_URL}/todos`, { text: todoText })
+      axios.post('https://todo-reminder-indol.vercel.app/todos', { text: todoText })
         .then(response => {
           const newTodo = response.data;
           setTodos([...todos, newTodo]);
@@ -36,7 +36,7 @@ const TodoApp = () => {
 
   const editTodo = () => {
     if (editTodoText) {
-      axios.put(`${API_URL}/todos/${editTodoId}`, { text: editTodoText })
+      axios.put(`https://todo-reminder-indol.vercel.app/todos/${editTodoId}`, { text: editTodoText })
         .then(response => {
           const updatedTodos = todos.map(todo =>
             todo.id === editTodoId ? { ...todo, text: editTodoText } : todo
@@ -52,7 +52,7 @@ const TodoApp = () => {
   };
 
   const deleteTodo = (todoId) => {
-    axios.delete(`${API_URL}/todos/${todoId}`)
+    axios.delete(`https://todo-reminder-indol.vercel.app/todos/${todoId}`)
       .then(response => {
         setTodos(todos.filter(todo => todo.id !== todoId));
       })
@@ -62,7 +62,7 @@ const TodoApp = () => {
   };
 
   const deleteAllTodos = () => {
-    axios.delete('${API_URL}/todos/delete_all')
+    axios.delete('https://todo-reminder-indol.vercel.app/todos/delete_all')
       .then(response => {
         setTodos([]);
       })
