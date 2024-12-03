@@ -10,7 +10,7 @@ const TodoApp = () => {
   const [editTodoId, setEditTodoId] = useState(null);
 
   useEffect(() => {
-    axios.get('https://todo-reminder-indol.vercel.app/todos')
+    axios.get('http://localhost:5000/todos')
       .then(response => {
         setTodos(response.data);
       })
@@ -21,7 +21,7 @@ const TodoApp = () => {
 
   const addTodo = () => {
     if (todoText) {
-      axios.post('https://todo-reminder-indol.vercel.app/todos', { text: todoText })
+      axios.post('http://localhost:5000/todos', { text: todoText })
         .then(response => {
           const newTodo = response.data;
           setTodos([...todos, newTodo]);
@@ -35,7 +35,7 @@ const TodoApp = () => {
 
   const editTodo = () => {
     if (editTodoText) {
-      axios.put(`https://todo-reminder-indol.vercel.app/todos/${editTodoId}`, { text: editTodoText })
+      axios.put(`http://localhost:5000/todos/${editTodoId}`, { text: editTodoText })
         .then(response => {
           const updatedTodos = todos.map(todo =>
             todo.id === editTodoId ? { ...todo, text: editTodoText } : todo
@@ -51,7 +51,7 @@ const TodoApp = () => {
   };
 
   const deleteTodo = (todoId) => {
-    axios.delete(`https://todo-reminder-indol.vercel.app/todos/${todoId}`)
+    axios.delete(`http://localhost:5000/todos/${todoId}`)
       .then(response => {
         setTodos(todos.filter(todo => todo.id !== todoId));
       })
@@ -61,7 +61,7 @@ const TodoApp = () => {
   };
 
   const deleteAllTodos = () => {
-    axios.delete('https://todo-reminder-indol.vercel.app/todos/delete_all')
+    axios.delete('http://localhost:5000/todos/delete_all')
       .then(response => {
         setTodos([]);
       })
