@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_BASE_URL = 'https://todo-reminder-indol.vercel.app';
+const API_BASE_URL = 'https://todo-reminder-indol.vercel.app'; // Your live site API URL
 
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
@@ -13,10 +13,17 @@ const TodoApp = () => {
   useEffect(() => {
     axios.get(`${API_BASE_URL}/todos`)
       .then(response => {
-        setTodos(response.data);
+        // Check if response data is an array
+        if (Array.isArray(response.data)) {
+          setTodos(response.data); // Set the todos if it's an array
+        } else {
+          console.error('Unexpected response format:', response.data);
+          setTodos([]); // Fallback to an empty array
+        }
       })
       .catch(error => {
         console.error('Error fetching todos:', error);
+        setTodos([]); // Fallback to an empty array on error
       });
   }, []);
 
@@ -101,7 +108,7 @@ const TodoApp = () => {
         </div>
       )}
       <ul className="list-group">
-        {todos.map(todo => (
+        {Array.isArray(todos) && todos.map(todo => (
           <li key={todo.id} className="list-group-item d-flex justify-content-between align-items-center">
             {todo.text}
             <div>
