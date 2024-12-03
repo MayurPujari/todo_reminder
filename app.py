@@ -9,7 +9,7 @@ import logging
 
 # Initialize the Flask app and API
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
 
 # Load environment variables from .env file
@@ -119,4 +119,4 @@ api.add_resource(Todo, '/todos/<int:todo_id>')
 api.add_resource(DeleteAllTodos, '/todos/delete_all')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

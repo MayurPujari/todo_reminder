@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_URL = "https://todo-reminder-indol.vercel.app"; 
+// const API_URL = "https://todo-reminder-indol.vercel.app";  
+const API_URL = "http://192.168.1.12:5000";
 
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
