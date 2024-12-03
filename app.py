@@ -26,6 +26,7 @@ def get_db_connection():
 
 # Create the Todo resource
 class TodoList(Resource):
+@app.route('/todos', methods=['GET'])
     def get(self):
         conn = get_db_connection()
         cur = conn.cursor()
@@ -49,6 +50,7 @@ class TodoList(Resource):
 
 
 class Todo(Resource):
+@app.route('/todos', methods=['GET'])
     def get(self, todo_id):
         conn = get_db_connection()
         cur = conn.cursor()
