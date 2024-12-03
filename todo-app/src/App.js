@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_BASE_URL = 'https://todo-reminder-indol.vercel.app'; // Your live site API URL
 
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
@@ -11,25 +10,18 @@ const TodoApp = () => {
   const [editTodoId, setEditTodoId] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/todos`)
+    axios.get('https://todo-reminder-indol.vercel.app/todos')
       .then(response => {
-        // Check if response data is an array
-        if (Array.isArray(response.data)) {
-          setTodos(response.data); // Set the todos if it's an array
-        } else {
-          console.error('Unexpected response format:', response.data);
-          setTodos([]); // Fallback to an empty array
-        }
+        setTodos(response.data);
       })
       .catch(error => {
         console.error('Error fetching todos:', error);
-        setTodos([]); // Fallback to an empty array on error
       });
   }, []);
 
   const addTodo = () => {
     if (todoText) {
-      axios.post(`${API_BASE_URL}/todos`, { text: todoText })
+      axios.post('https://todo-reminder-indol.vercel.app/todos', { text: todoText })
         .then(response => {
           const newTodo = response.data;
           setTodos([...todos, newTodo]);
@@ -43,7 +35,7 @@ const TodoApp = () => {
 
   const editTodo = () => {
     if (editTodoText) {
-      axios.put(`${API_BASE_URL}/todos/${editTodoId}`, { text: editTodoText })
+      axios.put(`https://todo-reminder-indol.vercel.app/todos/${editTodoId}`, { text: editTodoText })
         .then(response => {
           const updatedTodos = todos.map(todo =>
             todo.id === editTodoId ? { ...todo, text: editTodoText } : todo
@@ -59,7 +51,7 @@ const TodoApp = () => {
   };
 
   const deleteTodo = (todoId) => {
-    axios.delete(`${API_BASE_URL}/todos/${todoId}`)
+    axios.delete(`https://todo-reminder-indol.vercel.app/todos/${todoId}`)
       .then(response => {
         setTodos(todos.filter(todo => todo.id !== todoId));
       })
@@ -69,7 +61,7 @@ const TodoApp = () => {
   };
 
   const deleteAllTodos = () => {
-    axios.delete(`${API_BASE_URL}/todos/delete_all`)
+    axios.delete('https://todo-reminder-indol.vercel.app/todos/delete_all')
       .then(response => {
         setTodos([]);
       })
@@ -108,7 +100,7 @@ const TodoApp = () => {
         </div>
       )}
       <ul className="list-group">
-        {Array.isArray(todos) && todos.map(todo => (
+        {todos.map(todo => (
           <li key={todo.id} className="list-group-item d-flex justify-content-between align-items-center">
             {todo.text}
             <div>
