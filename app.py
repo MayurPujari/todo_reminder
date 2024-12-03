@@ -3,11 +3,20 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 import psycopg2
 import os
+from dotenv import load_dotenv
+from urllib.parse import urlparse
+import logging
 
 # Initialize the Flask app and API
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Initialize logging
+logging.basicConfig(level=logging.DEBUG)
 
 # PostgreSQL connection
 # def get_db_connection():
@@ -19,10 +28,27 @@ api = Api(app)
 #     )
 #     return conn
 
-# PostgreSQL connection
+# Function to get database connection
 def get_db_connection():
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
-    return conn
+    try:
+        database_url = os.getenv("DATABASE_URL")  # Get the DATABASE_URL from environment variable
+        logging.debug(f"Connecting to database: {database_url}")
+        
+        result = urlparse(database_url)
+
+        # Connect to the database
+        conn = psycopg2.connect(
+            database=result.path[1:],  # Remove the leading '/' from the database name
+            user=result.username,
+            password=result.password,
+            host=result.hostname,
+            port=result.port
+        )
+        logging.debug("Database connected successfully.")
+        return conn
+    except Exception as e:
+        logging.error(f"Error while connecting to the database: {str(e)}")
+        raise
 
 # Create the Todo resource
 class TodoList(Resource):
@@ -93,4 +119,4 @@ api.add_resource(Todo, '/todos/<int:todo_id>')
 api.add_resource(DeleteAllTodos, '/todos/delete_all')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
