@@ -3,6 +3,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // const API_URL = "https://todo-reminder-indol.vercel.app"; 
+const [todos, setTodos] = useState([]); // Initialize as an empty array
 
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
@@ -12,9 +13,14 @@ const TodoApp = () => {
 
   useEffect(() => {
     axios.get('https://todo-reminder-indol.vercel.app/todos')
-      .then(response => {
-        setTodos(response.data);
-      })
+    .then(response => {
+      const todos = response.data;
+      if (Array.isArray(todos)) {
+        setTodos(todos);
+      } else {
+        console.error("Response data is not an array:", todos);
+      }
+    })
       .catch(error => {
         console.error('Error fetching todos:', error);
       });
