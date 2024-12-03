@@ -34,11 +34,12 @@ class TodoList(Resource):
         todo_text = data['text']
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("INSERT INTO todos (text) VALUES (%s)", (todo_text,))
+        cur.execute("INSERT INTO todos (text) VALUES (%s) RETURNING id, text", (todo_text,))
+        new_todo = cur.fetchone()
         conn.commit()
         cur.close()
         conn.close()
-        return jsonify({"message": "Todo added!"})
+        return jsonify({"id": new_todo[0], "text": new_todo[1]})
 
 class Todo(Resource):
     def get(self, todo_id):
@@ -86,4 +87,4 @@ api.add_resource(Todo, '/todos/<int:todo_id>')
 api.add_resource(DeleteAllTodos, '/todos/delete_all')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

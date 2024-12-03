@@ -23,7 +23,7 @@ const TodoApp = () => {
     if (todoText) {
       axios.post('http://localhost:5000/todos', { text: todoText })
         .then(response => {
-          setTodos([...todos, { id: Date.now(), text: todoText }]);
+          setTodos([...todos, response.data]);
           setTodoText('');
         })
         .catch(error => {
@@ -35,7 +35,7 @@ const TodoApp = () => {
   const editTodo = () => {
     if (editTodoText) {
       axios.put(`http://localhost:5000/todos/${editTodoId}`, { text: editTodoText })
-        .then(response => {
+        .then(() => {
           const updatedTodos = todos.map(todo =>
             todo.id === editTodoId ? { ...todo, text: editTodoText } : todo
           );
@@ -51,7 +51,7 @@ const TodoApp = () => {
 
   const deleteTodo = (todoId) => {
     axios.delete(`http://localhost:5000/todos/${todoId}`)
-      .then(response => {
+      .then(() => {
         setTodos(todos.filter(todo => todo.id !== todoId));
       })
       .catch(error => {
@@ -61,7 +61,7 @@ const TodoApp = () => {
 
   const deleteAllTodos = () => {
     axios.delete('http://localhost:5000/todos/delete_all')
-      .then(response => {
+      .then(() => {
         setTodos([]);
       })
       .catch(error => {
