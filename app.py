@@ -38,7 +38,7 @@ def get_db_connection():
 
         # Connect to the database
         conn = psycopg2.connect(
-            database=result.path[1:],  # Remove the leading '/' from the database name
+            database=result.path[1:],  
             user=result.username,
             password=result.password,
             host=result.hostname,
